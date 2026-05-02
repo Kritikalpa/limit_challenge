@@ -1,4 +1,4 @@
-from django.db.models import Count, OuterRef, Subquery
+from django.db.models import Count, OuterRef, Subquery, Prefetch
 from rest_framework import viewsets
 
 from submissions import models, serializers
@@ -6,23 +6,27 @@ from submissions.filters.submission import SubmissionFilterSet
 
 
 class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.Submission.objects.all()
     filterset_class = SubmissionFilterSet
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        base = models.Submission.objects.select_related("company", "broker", "owner")
 
         if self.action == "list":
             latest_note = models.Note.objects.filter(submission_id=OuterRef("pk")).order_by("-created_at")
-            queryset = queryset.annotate(
+            return base.annotate(
                 document_count=Count("documents", distinct=True),
                 note_count=Count("notes", distinct=True),
                 latest_note_author=Subquery(latest_note.values("author_name")[:1]),
                 latest_note_body=Subquery(latest_note.values("body")[:1]),
                 latest_note_created_at=Subquery(latest_note.values("created_at")[:1]),
-            )
+            ).order_by("-created_at", "-id")
 
-        return queryset
+        # Detail action — prefetch reverse relations to avoid N+1
+        return base.prefetch_related(
+            Prefetch("contacts", queryset=models.Contact.objects.order_by("name")),
+            Prefetch("documents", queryset=models.Document.objects.order_by("-uploaded_at")),
+            Prefetch("notes", queryset=models.Note.objects.order_by("-created_at")),
+        )
 
     def get_serializer_class(self):
         if self.action == "list":

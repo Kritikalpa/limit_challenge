@@ -104,7 +104,7 @@ class Command(BaseCommand):
                     )
                 )
 
-            for _ in range(randint(1, 4)):
+            for _ in range(randint(0, 4)):
                 documents.append(
                     models.Document(
                         submission=submission,
@@ -115,7 +115,7 @@ class Command(BaseCommand):
                     )
                 )
 
-            for _ in range(randint(1, 5)):
+            for _ in range(randint(0, 5)):
                 notes.append(
                     models.Note(
                         submission=submission,

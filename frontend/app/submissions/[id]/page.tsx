@@ -1,58 +1,69 @@
 'use client';
 
 import {
+  Alert,
   Box,
-  Card,
-  CardContent,
+  Button,
   Container,
-  Divider,
   Link as MuiLink,
   Stack,
-  Typography,
 } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
 import { useSubmissionDetail } from '@/lib/hooks/useSubmissions';
+import { SubmissionHeader } from './SubmissionHeader';
+import { ContactsSection } from './ContactsSection';
+import { DocumentsSection } from './DocumentsSection';
+import { NotesSection } from './NotesSection';
+import { DetailSkeleton } from './DetailSkeleton';
 
 export default function SubmissionDetailPage() {
   const params = useParams<{ id: string }>();
   const submissionId = params?.id ?? '';
 
-  const detailQuery = useSubmissionDetail(submissionId);
+  const { data, isPending, isError, refetch } = useSubmissionDetail(submissionId);
 
   return (
-    <Container maxWidth="md" sx={{ py: 6 }}>
+    <Container maxWidth="lg" sx={{ py: 6 }}>
       <Stack spacing={3}>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <div>
-            <Typography variant="h4">Submission detail</Typography>
-            <Typography color="text.secondary">
-              Use this page to present the full submission payload along with contacts, documents,
-              and notes.
-            </Typography>
-          </div>
-          <MuiLink component={Link} href="/submissions" underline="none">
-            Back to list
+        <Box>
+          <MuiLink
+            component={Link}
+            href="/submissions"
+            underline="hover"
+            color="text.secondary"
+            sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, fontSize: 14 }}
+          >
+            <ArrowBackIcon sx={{ fontSize: 16 }} />
+            Back to submissions
           </MuiLink>
         </Box>
 
-        <Card variant="outlined">
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              API data placeholder
-            </Typography>
-            <Typography color="text.secondary">
-              The React Query call is disabled until you turn it on. Once you enable it and wire up
-              serializers on the backend you can render key facts, contacts, documents, and note
-              timelines.
-            </Typography>
-            <Divider sx={{ my: 2 }} />
-            <pre style={{ margin: 0, fontSize: 14 }}>
-              {JSON.stringify({ submissionId, queryKey: detailQuery.queryKey }, null, 2)}
-            </pre>
-          </CardContent>
-        </Card>
+        {isPending && <DetailSkeleton />}
+
+        {isError && (
+          <Alert
+            severity="error"
+            action={
+              <Button color="inherit" size="small" onClick={() => refetch()}>
+                Retry
+              </Button>
+            }
+          >
+            Failed to load submission #{submissionId}. Please try again.
+          </Alert>
+        )}
+
+        {data && (
+          <>
+            <SubmissionHeader submission={data} />
+            <ContactsSection contacts={data.contacts} />
+            <DocumentsSection documents={data.documents} />
+            <NotesSection notes={data.notes} />
+          </>
+        )}
       </Stack>
     </Container>
   );

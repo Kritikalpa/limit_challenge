@@ -133,3 +133,24 @@ Visit `http://localhost:3000/submissions` to start building.
 ## Optional Bonus
 
 Authentication, deployment, or extra tooling are not required but welcome if scope allows.
+
+## Submission Summary
+
+### Approach
+- **Backend:** Extended `SubmissionFilterSet` to support `brokerId`, `companySearch`, and advanced filters. Optimized the `SubmissionViewSet` with `select_related` and `prefetch_related` to minimize N+1 queries.
+- **Frontend:**
+  - Implemented a robust data fetching layer using `@tanstack/react-query` with debounced search and URL-synchronized state.
+  - Built a responsive `SubmissionTable` with interactive rows, status/priority chips, and tooltips for note previews.
+  - Developed a comprehensive detail page with dedicated sections for Contacts, Documents, and a threaded Notes timeline with author avatars and relative timestamps.
+  - Implemented full pagination and state management for loading, empty, and error cases.
+
+### Tradeoffs
+- **Styling:** Chose to use MUI's `sx` prop for rapid development of specific component styles while maintaining consistency with the global theme.
+- **State Management:** Prioritized URL-based state for filters to ensure that the view state is shareable and persists across refreshes, which adds a bit more complexity in syncing React state with URL parameters but significantly improves UX.
+- **Backend Complexity:** Used `django-filter` for declarative filtering, which is powerful but requires explicit parameter naming in the `FilterSet` to match the frontend's camelCase convention.
+
+### Stretch Goals Implemented
+- **Advanced Filtering:** Added date range (`createdFrom`, `createdTo`) and boolean presence filters (`hasDocuments`, `hasNotes`) to both backend and frontend.
+- **Performance Optimization:** Implemented eager loading on the backend to ensure the detail page fetches all related data in a single request (plus reverse relations prefetches).
+- **UX Polish:** Added skeleton loaders for both the list and detail pages to provide a smooth perceived performance during data transitions.
+- **Author Avatars:** Implemented deterministic color-coded avatars in the notes section based on author names.
