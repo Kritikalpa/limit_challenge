@@ -2,6 +2,12 @@
 
 This repository contains a complete implementation of the Submission Tracker challenge, featuring a robust Django backend and a polished Next.js frontend with comprehensive automated testing.
 
+## Demo
+
+[![Loom Walkthrough](https://cdn.loom.com/sessions/thumbnails/86116d89a59844f0b65a0826b295d8c8-0e53e8d9503bd69f-full-play.gif#t=0.1)](https://www.loom.com/share/86116d89a59844f0b65a0826b295d8c8)
+
+[Watch the walkthrough here](https://www.loom.com/share/86116d89a59844f0b65a0826b295d8c8)
+
 ## Getting Started
 
 ### Backend Setup
