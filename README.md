@@ -4,9 +4,9 @@ This repository contains a complete implementation of the Submission Tracker cha
 
 ## Demo
 
-[![Loom Walkthrough](https://cdn.loom.com/sessions/thumbnails/86116d89a59844f0b65a0826b295d8c8-0e53e8d9503bd69f-full-play.gif#t=0.1)](https://www.loom.com/share/86116d89a59844f0b65a0826b295d8c8)
+[![Loom Walkthrough](https://cdn.loom.com/sessions/thumbnails/e3afda3fe4424d0aae7badcd2396d123-3cc0fbb52f7b7764-full-play.gif#t=0.1)](https://www.loom.com/share/e3afda3fe4424d0aae7badcd2396d123)
 
-[Watch the walkthrough here](https://www.loom.com/share/86116d89a59844f0b65a0826b295d8c8)
+[Watch the walkthrough here](https://www.loom.com/share/e3afda3fe4424d0aae7badcd2396d123)
 
 ## Getting Started
 
