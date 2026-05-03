@@ -62,6 +62,7 @@ npm test
 *   **UX Polishing:**
     *   **Skeleton Loaders:** Added beautiful skeleton loading states for both the list and detail pages to improve perceived performance.
     *   **Interactive List:** Built a responsive table with row-level navigation and tooltip previews for the latest notes.
+    *   **Filter UX:** Added a "Clear filters" action directly in the FilterBar that intelligently toggles visibility based on active filter state.
     *   **Threaded Notes:** Implemented a clean, timeline-based notes section with author avatars and relative timestamps.
 *   **Author Avatars:** Developed a deterministic color-coding system for user avatars to provide a professional, visual-first identity for team members.
 *   **Error Handling:** Implemented "Error" and "Empty" states with retry/clear-filter functionality to provide a resilient user journey.
@@ -70,6 +71,26 @@ npm test
 *   **Sorting Stability:** Explicitly forced `.order_by("-created_at", "-id")` in querysets to override Django's default grouping behavior that occasionally dropped sort order.
 *   **Filter Persistence:** Ensured that pagination resets to page 1 automatically whenever a filter is changed, preventing "out of range" empty states.
 *   **Debounce Logic:** Implemented a 300ms debounce on the company search input to optimize network traffic and URL updates.
+
+---
+
+## Tradeoffs & Considerations
+
+### 1. URL-Driven State vs. Local State
+*   **Decision:** I chose to drive the entire filter and pagination state through the URL search parameters.
+*   **Tradeoff:** While this adds some complexity in synchronizing UI inputs with the URL, it provides a far superior user experience. Users can refresh the page, share specific filtered views with colleagues, and use the browser's back/forward buttons seamlessly.
+
+### 2. Testing Infrastructure (MSW v1 vs. v2)
+*   **Decision:** I downgraded from MSW v2 to **v1.3.2**.
+*   **Tradeoff:** MSW v2 uses modern Fetch API standards that currently have non-trivial compatibility issues with Jest's JSDOM environment. I prioritized a **stable, passing, and reliable test suite** over using the latest version of the mocking library.
+
+### 3. Client-Side vs. Server-Side Fetching
+*   **Decision:** Focused on client-side fetching using `react-query`.
+*   **Tradeoff:** For a dashboard/internal tool where interactivity and "real-time" filtering are key, the SPA-like feel of React Query outweighs the SEO benefits of pure Server-Side Rendering (SSR).
+
+### 4. UI Styling Approach
+*   **Decision:** Heavily utilized MUI's `sx` prop and theme-based styling.
+*   **Tradeoff:** This approach allows for very rapid development and tight integration with the Material Design system, though it does create a stronger dependency on the MUI library compared to a utility-first approach like Tailwind.
 
 ---
 
@@ -83,4 +104,13 @@ npm test
     *   `DEBUG`: `False`
     *   `DATABASE_URL`: (Optional) Your external Postgres URL. Defaults to SQLite if not provided.
     *   `ALLOWED_HOSTS`: `your-app-name.onrender.com`
+    *   **Root Directory:** `backend`
 4.  **Python Version:** The version is locked to `3.12.6` via the `.python-version` file.
+
+### Frontend (Web Service)
+1.  **Build Command:** `npm install && npm run build`
+2.  **Start Command:** `npm start`
+3.  **Environment Variables:**
+    *   `NEXT_PUBLIC_API_BASE_URL`: The URL of your deployed Render backend.
+4.  **Settings:**
+    *   **Root Directory:** `frontend`

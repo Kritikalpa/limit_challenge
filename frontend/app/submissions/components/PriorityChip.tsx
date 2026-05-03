@@ -13,9 +13,9 @@ const PRIORITY_CONFIG: Record<SubmissionPriority, {
     fontWeight: number
   }
 }> = {
-  high: { label: 'High', sx: { bgcolor: '#fde8e8', color: '#b91c1c', fontWeight: 700 } },
+  high: { label: 'High', sx: { bgcolor: '#fde8e8', color: '#b91c1c', fontWeight: 600 } },
   medium: { label: 'Medium', sx: { bgcolor: '#fef3c7', color: '#92400e', fontWeight: 600 } },
-  low: { label: 'Low', sx: { bgcolor: '#f1f5f9', color: '#475569', fontWeight: 500 } },
+  low: { label: 'Low', sx: { bgcolor: '#f1f5f9', color: '#475569', fontWeight: 600 } },
 };
 
 export function PriorityChip({ priority, size = 'small' }: PriorityChipProps) {

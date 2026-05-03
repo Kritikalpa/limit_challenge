@@ -1,8 +1,9 @@
 'use client';
 
-import { Box, Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import FilterListOffIcon from '@mui/icons-material/FilterListOff';
 import { Broker, SubmissionStatus } from '@/lib/types';
 
 const STATUS_OPTIONS: { label: string; value: SubmissionStatus | '' }[] = [
@@ -92,6 +93,10 @@ export function FilterBar({ brokers }: FilterBarProps) {
     updateUrl({ createdTo: value });
   };
 
+  const handleClearAll = () => {
+    router.push(pathname);
+  };
+
   useEffect(() => {
     setStatus((searchParams.get('status') as SubmissionStatus) ?? '');
     setBrokerId(searchParams.get('brokerId') ?? '');
@@ -107,6 +112,8 @@ export function FilterBar({ brokers }: FilterBarProps) {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, []);
+
+  const hasActiveFilters = searchParams.toString() !== '';
 
   return (
     <Stack spacing={3}>
@@ -222,6 +229,18 @@ export function FilterBar({ brokers }: FilterBarProps) {
               sx={{ bgcolor: 'white' }}
             />
           </Stack>
+
+          <Button
+            size="small"
+            startIcon={<FilterListOffIcon />}
+            onClick={handleClearAll}
+            disabled={!hasActiveFilters}
+            sx={{
+              fontWeight: 600,
+            }}
+          >
+            Clear filters
+          </Button>
         </Stack>
       </Box>
     </Stack>
