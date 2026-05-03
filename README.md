@@ -2,6 +2,10 @@
 
 This repository contains a complete implementation of the Submission Tracker challenge, featuring a robust Django backend and a polished Next.js frontend with comprehensive automated testing.
 
+### 🚀 [Live Application Link](https://limit-challenge-fe.onrender.com/)
+> [!NOTE]
+> Since this is hosted on a Render Free Instance, the web server may take a minute to spin up (cold start) if it has been inactive. Please allow a moment for the initial load.
+
 ## Demo
 
 [![Loom Walkthrough](https://cdn.loom.com/sessions/thumbnails/e3afda3fe4424d0aae7badcd2396d123-3cc0fbb52f7b7764-full-play.gif#t=0.1)](https://www.loom.com/share/e3afda3fe4424d0aae7badcd2396d123)
