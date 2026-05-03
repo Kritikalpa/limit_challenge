@@ -83,3 +83,4 @@ npm test
     *   `DEBUG`: `False`
     *   `DATABASE_URL`: (Optional) Your external Postgres URL. Defaults to SQLite if not provided.
     *   `ALLOWED_HOSTS`: `your-app-name.onrender.com`
+4.  **Python Version:** The version is locked to `3.12.6` via the `.python-version` file.
