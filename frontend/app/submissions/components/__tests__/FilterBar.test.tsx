@@ -94,4 +94,25 @@ describe('FilterBar', () => {
 
     expect(push).toHaveBeenCalledWith('/submissions?page=1&createdFrom=2023-01-01');
   });
+
+  it('resets state when search params are cleared', () => {
+    // Start with params
+    const params = new URLSearchParams('status=lost&companySearch=google');
+    (useSearchParams as jest.Mock).mockReturnValue(params);
+    
+    const { rerender, container } = render(<FilterBar brokers={mockBrokers} />);
+    
+    expect(screen.getByLabelText('Company search')).toHaveValue('google');
+    expect(screen.getByText('Lost')).toBeInTheDocument();
+
+    // Simulate clearing URL
+    (useSearchParams as jest.Mock).mockReturnValue(new URLSearchParams());
+    
+    // We need to rerender to trigger the useEffect with new searchParams
+    rerender(<FilterBar brokers={mockBrokers} />);
+    
+    expect(screen.getByLabelText('Company search')).toHaveValue('');
+    const statusInput = container.querySelector('input[name="status"]');
+    expect(statusInput).toHaveValue('');
+  });
 });

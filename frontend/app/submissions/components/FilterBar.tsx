@@ -93,6 +93,16 @@ export function FilterBar({ brokers }: FilterBarProps) {
   };
 
   useEffect(() => {
+    setStatus((searchParams.get('status') as SubmissionStatus) ?? '');
+    setBrokerId(searchParams.get('brokerId') ?? '');
+    setCompanyQuery(searchParams.get('companySearch') ?? '');
+    setHasDocuments(searchParams.get('hasDocuments') === 'true');
+    setHasNotes(searchParams.get('hasNotes') === 'true');
+    setCreatedFrom(searchParams.get('createdFrom') ?? '');
+    setCreatedTo(searchParams.get('createdTo') ?? '');
+  }, [searchParams]);
+
+  useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
@@ -104,6 +114,7 @@ export function FilterBar({ brokers }: FilterBarProps) {
         <TextField
           select
           label="Status"
+          name="status"
           value={status}
           onChange={(e) => handleStatusChange(e.target.value as SubmissionStatus | '')}
           fullWidth
@@ -121,6 +132,7 @@ export function FilterBar({ brokers }: FilterBarProps) {
         <TextField
           select
           label="Broker"
+          name="brokerId"
           value={brokerId}
           onChange={(e) => handleBrokerChange(e.target.value)}
           fullWidth
@@ -138,6 +150,7 @@ export function FilterBar({ brokers }: FilterBarProps) {
 
         <TextField
           label="Company search"
+          name="companySearch"
           value={companyQuery}
           onChange={(e) => handleCompanyChange(e.target.value)}
           fullWidth
