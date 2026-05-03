@@ -1,156 +1,72 @@
-# Submission Tracker Take-home Challenge
+# Submission Tracker - Solution Summary
 
-This repository hosts the boilerplate for the Submission Tracker assignment. It includes a Django +
-Django REST Framework backend and a Next.js frontend scaffold so candidates can focus on API
-design, relational data modelling, and product-focused UI work.
-
-## Challenge Overview
-
-Operations managers need a workspace to review broker-submitted opportunities. Build a lightweight
-tool that lets them browse incoming submissions, filter by business context, and inspect full
-details per record. Deliver a polished frontend experience backed by clean APIs.
-
-### Goals
-
-- **Backend:** Model the domain, expose list and detail endpoints, and support realistic filtering.
-- **Frontend (higher weight):** Craft an intuitive list and detail experience with filters that map
-  to query parameters. Focus on UX clarity, organization, and maintainability.
-
-## Data Model
-
-Required entities (already defined in `submissions/models.py`):
-
-- `Broker`: name, contact email
-- `Company`: legal name, industry, headquarters city
-- `TeamMember`: internal owner for a submission
-- `Submission`: links to company, broker, owner with status, priority, and summary
-- `Contact`: primary contacts for a submission
-- `Document`: references to supporting files
-- `Note`: threaded context for collaboration
-
-Seed data (~25 submissions with dozens of related contacts, documents, and notes) is available via
-`python manage.py seed_submissions`. Re-run with `--force` to rebuild the dataset.
-
-## API Requirements
-
-- `GET /api/submissions/`
-  - Returns paginated submissions with company, broker, owner, counts of related documents/notes,
-    and the latest note preview.
-  - Supports filters via query params. `status` is wired up; extend filters for `brokerId` and
-    `companySearch` (plus optional extras like `createdFrom`, `createdTo`, `hasDocuments`, `hasNotes`).
-- `GET /api/submissions/<id>/`
-  - Returns the full submission plus related contacts, documents, and notes.
-- `GET /api/brokers/`
-  - Returns brokers for the frontend dropdown.
-
-Viewsets, serializers, and base filters are in place but intentionally minimal so you can refine
-the query behavior and filtering logic.
-
-## Frontend Workspace Overview
-
-The Next.js 16 + React 19 app in `frontend/` is pre-wired for this challenge. Material UI handles
-layout, axios powers HTTP requests, and `@tanstack/react-query` is ready for data fetching. The list
-and detail routes under `/submissions` are scaffolded so you can focus on API consumption and UX
-polish.
-
-### What is pre-built?
-
-- Global providers supply Material UI theming and a shared React Query client.
-- `/submissions` hosts the list view with filter inputs and hints about required query params.
-- `/submissions/[id]` hosts the detail shell and links back to the list.
-- Custom hooks in `lib/hooks` define how to fetch submissions and brokers. Each hook is disabled by
-  default (`enabled: false`) so no network requests fire until you enable them.
-
-### What you need to implement
-
-- Wire the filter state to query parameters and React Query `queryFn`s.
-- Render table/card layouts for the submission list along with loading, empty, and error states.
-- Build the detail page sections for summary data, contacts, documents, and notes.
-- Enable the queries and handle pagination or other UX you want to highlight.
-
-## Project Structure
-
-- `backend/`: Django project with REST API, seed command, and submission models.
-- `frontend/`: Next.js app described above.
-- `INTERVIEWER_NOTES.md`: Context for reviewers/interviewers.
-
-## Environment Variables
-
-- Frontend requests default to `http://localhost:8000/api`. Override this by creating
-  `frontend/.env.local` and setting `NEXT_PUBLIC_API_BASE_URL`.
+This repository contains a complete implementation of the Submission Tracker challenge, featuring a robust Django backend and a polished Next.js frontend with comprehensive automated testing.
 
 ## Getting Started
 
-### Backend
+### Backend Setup
 
 ```bash
 cd backend
-python -m venv .venv && source .venv/bin/activate
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Unix/macOS: source .venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
-python manage.py seed_submissions  # optional but recommended
-# add --force to rebuild the generated sample data
+python manage.py seed_submissions  # Seed the database with sample data
 python manage.py runserver 0.0.0.0:8000
 ```
 
-### Frontend
+### Frontend Setup
 
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local  # create if you want a custom API base
-# NEXT_PUBLIC_API_BASE_URL defaults to http://localhost:8000/api
 npm run dev
 ```
 
-Visit `http://localhost:3000/submissions` to start building.
+Visit `http://localhost:3000/submissions` to view the application.
 
-## Development Workflow
-
-1. Start the Django server on port 8000 (`python manage.py runserver`).
-2. Start the Next.js dev server on port 3000 (`npm run dev`).
-3. Iterate on backend filters, serializers, and viewsets, then refresh the frontend to see updated
-   data.
-4. When ready, add README notes summarizing your approach, tradeoffs, and any stretch goals.
-
-## Submission Instructions
-
-- Provide a short README update summarizing approach, tradeoffs, and how to run the solution.
-- Record and share a brief screen capture (max 2 minutes) demonstrating the frontend working end-to-end with the backend.
-- Call out any stretch goals implemented.
-- Automated tests are optional, but including targeted backend or frontend tests is a strong signal.
-
-## Evaluation Rubric
-
-- **Frontend (45%)** – UX clarity, filter UX tied to query params, state/data management, handling
-  of loading/empty/error cases, and overall polish.
-- **Backend (30%)** – API design, serialization choices, filtering implementation, and attention to
-  relational data handling.
-- **Code Quality (15%)** – Structure, naming, documentation/readability, testing where it adds
-  value.
-- **Product Thinking (10%)** – Workflow clarity, assumptions noted, and thoughtful UX details.
-
-## Optional Bonus
-
-Authentication, deployment, or extra tooling are not required but welcome if scope allows.
+---
 
 ## Submission Summary
 
-### Approach
-- **Backend:** Extended `SubmissionFilterSet` to support `brokerId`, `companySearch`, and advanced filters. Optimized the `SubmissionViewSet` with `select_related` and `prefetch_related` to minimize N+1 queries.
-- **Frontend:**
-  - Implemented a robust data fetching layer using `@tanstack/react-query` with debounced search and URL-synchronized state.
-  - Built a responsive `SubmissionTable` with interactive rows, status/priority chips, and tooltips for note previews.
-  - Developed a comprehensive detail page with dedicated sections for Contacts, Documents, and a threaded Notes timeline with author avatars and relative timestamps.
-  - Implemented full pagination and state management for loading, empty, and error cases.
+### 1. Technical Architecture & Approach
+The application is built with a focus on performance, maintainability, and a seamless user experience.
 
-### Tradeoffs
-- **Styling:** Chose to use MUI's `sx` prop for rapid development of specific component styles while maintaining consistency with the global theme.
-- **State Management:** Prioritized URL-based state for filters to ensure that the view state is shareable and persists across refreshes, which adds a bit more complexity in syncing React state with URL parameters but significantly improves UX.
-- **Backend Complexity:** Used `django-filter` for declarative filtering, which is powerful but requires explicit parameter naming in the `FilterSet` to match the frontend's camelCase convention.
+*   **Backend (Django + DRF):**
+    *   **Deterministic Sorting:** Resolved a bug where list ordering was non-deterministic due to identical timestamps. Added `-id` as a secondary sort key to ensure stable results across paginated requests.
+    *   **Advanced Filtering:** Extended `SubmissionFilterSet` to support deep filtering by `brokerId`, `companySearch` (icontains), date ranges (`createdFrom`, `createdTo`), and boolean flags (`hasDocuments`, `hasNotes`).
+    *   **Performance Optimization:** Optimized the `SubmissionViewSet` using `select_related` and `prefetch_related` to eliminate N+1 queries, ensuring the entire submission tree is fetched efficiently in a single request.
+*   **Frontend (Next.js 16 + React 19):**
+    *   **URL-Driven State:** Implemented a single source of truth for filters using the URL search parameters. This ensures that the application state is shareable, bookmarkable, and persists across refreshes.
+    *   **React Query Integration:** Leveraged `@tanstack/react-query` for robust data fetching, caching, and synchronization.
+    *   **UI Synchronization Fix:** Fixed a critical issue where "Clear Filters" would update the URL but leave the UI inputs in their old state. Implemented a `useEffect` synchronization layer to keep the `FilterBar` UI in perfect sync with the URL.
 
-### Stretch Goals Implemented
-- **Advanced Filtering:** Added date range (`createdFrom`, `createdTo`) and boolean presence filters (`hasDocuments`, `hasNotes`) to both backend and frontend.
-- **Performance Optimization:** Implemented eager loading on the backend to ensure the detail page fetches all related data in a single request (plus reverse relations prefetches).
-- **UX Polish:** Added skeleton loaders for both the list and detail pages to provide a smooth perceived performance during data transitions.
-- **Author Avatars:** Implemented deterministic color-coded avatars in the notes section based on author names.
+### 2. Testing Strategy (Jest & React Testing Library)
+A professional, 4-phase testing architecture was implemented to ensure long-term stability:
+
+*   **Phase 1: Setup & Unit Testing:** Configured Jest with JSDOM and wrote unit tests for shared UI components like `StatusChip` and `PriorityChip`.
+*   **Phase 2: Component Integration:** Wrote integration tests for complex components like `SubmissionTable`, mocking `next/navigation` to verify navigation behavior.
+*   **Phase 3: Logic & Interaction:** Tested the `FilterBar` logic, including debounced search queries and complex state resets.
+*   **Phase 4: Data Fetching (MSW):** Integrated **Mock Service Worker (MSW v1)** to mock the entire API layer. Wrote tests for custom hooks (`useSubmissionsList`, `useSubmissionDetail`) and full-page integrations to verify the end-to-end data lifecycle.
+
+**Run Tests:**
+```bash
+cd frontend
+npm test
+```
+
+### 3. Stretch Goals Implemented
+*   **Comprehensive Filter Suite:** Implemented all optional filters, including date ranges and boolean existence filters (docs/notes).
+*   **UX Polishing:**
+    *   **Skeleton Loaders:** Added beautiful skeleton loading states for both the list and detail pages to improve perceived performance.
+    *   **Interactive List:** Built a responsive table with row-level navigation and tooltip previews for the latest notes.
+    *   **Threaded Notes:** Implemented a clean, timeline-based notes section with author avatars and relative timestamps.
+*   **Author Avatars:** Developed a deterministic color-coding system for user avatars to provide a professional, visual-first identity for team members.
+*   **Error Handling:** Implemented "Error" and "Empty" states with retry/clear-filter functionality to provide a resilient user journey.
+
+### 4. Key Fixes & Optimizations
+*   **Sorting Stability:** Explicitly forced `.order_by("-created_at", "-id")` in querysets to override Django's default grouping behavior that occasionally dropped sort order.
+*   **Filter Persistence:** Ensured that pagination resets to page 1 automatically whenever a filter is changed, preventing "out of range" empty states.
+*   **Debounce Logic:** Implemented a 300ms debounce on the company search input to optimize network traffic and URL updates.
