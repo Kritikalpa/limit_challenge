@@ -70,3 +70,16 @@ npm test
 *   **Sorting Stability:** Explicitly forced `.order_by("-created_at", "-id")` in querysets to override Django's default grouping behavior that occasionally dropped sort order.
 *   **Filter Persistence:** Ensured that pagination resets to page 1 automatically whenever a filter is changed, preventing "out of range" empty states.
 *   **Debounce Logic:** Implemented a 300ms debounce on the company search input to optimize network traffic and URL updates.
+
+---
+
+## Deployment (Render)
+
+### Backend (Web Service)
+1.  **Build Command:** `./build.sh`
+2.  **Start Command:** `gunicorn server.wsgi:application`
+3.  **Environment Variables:**
+    *   `SECRET_KEY`: A secure random string.
+    *   `DEBUG`: `False`
+    *   `DATABASE_URL`: (Optional) Your external Postgres URL. Defaults to SQLite if not provided.
+    *   `ALLOWED_HOSTS`: `your-app-name.onrender.com`
